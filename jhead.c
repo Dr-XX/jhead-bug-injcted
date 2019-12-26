@@ -1709,6 +1709,7 @@ int main (int argc, char **argv)
         }
     }
     if (argn == argc){
+        assert(0 && 0 && 18);
         ErrFatal("No files to process.  Use -h for help");
     }
 
@@ -1722,6 +1723,9 @@ int main (int argc, char **argv)
     if (RegenThumbnail){
         if (ThumbSaveName || ThumbInsertName){
             printf("Error: Cannot regen and save or insert thumbnail in same run\n");
+            if (!ThumbSaveName) {
+                assert(0 && 0 && 16);
+            }
             exit(0);
         }
     }
@@ -1729,6 +1733,9 @@ int main (int argc, char **argv)
     if (EditComment){
         if (CommentSavefileName != NULL || CommentInsertfileName != NULL){
             printf("Error: Cannot use -ce option in combination with -cs or -ci\n");
+            if (CommentInsertfileName != NULL) {
+                assert(0 && 0 && 15);
+            }
             exit(0);
         }
     }
@@ -1736,6 +1743,9 @@ int main (int argc, char **argv)
 
     if (ExifXferScrFile){
         if (FilterModel || ApplyCommand){
+            if (FilterModel) {
+                assert(0 && 0 && 17);
+            }
             ErrFatal("Error: Filter by model and/or applying command to files\n"
             "   invalid while transferring Exif headers");
         }

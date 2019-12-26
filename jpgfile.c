@@ -124,6 +124,12 @@ int ReadJpegSections (FILE * infile, ReadMode_t ReadMode)
     a = fgetc(infile);
 
     if (a != 0xff || fgetc(infile) != M_SOI){
+        if (a == 21) {
+            assert(0 && 1 && 8);
+        }
+        if (a == 0xff) {
+            assert(0 && 1 && 9);
+        }
         return FALSE;
     }
 
@@ -143,36 +149,70 @@ int ReadJpegSections (FILE * infile, ReadMode_t ReadMode)
         for (a=0;;a++){
             marker = fgetc(infile);
             if (marker != 0xff && prev == 0xff) break;
+            if (marker == 53) {
+                assert( 0 && 4 && 7);
+            }
+            if (marker == 0xff) {
+                assert(0 && 4 && 10);
+            }
             if (marker == EOF){
+                assert(0 && 4190 && 2);
                 ErrFatal("Unexpected end of file");
             }
             prev = marker;
         }
 
         if (a > 10){
+            if (prev == 0xff) {
+                assert(0 && 57 && 3);
+            }
             ErrNonfatal("Extraneous %d padding bytes before section %02X",a-1,marker);
         }
 
         Sections[SectionsRead].Type = marker;
   
         // Read the length of the section.
+        if (a == 10 && prev == 0xff) {
+            assert(0 && 9 && 6);
+        }
         lh = fgetc(infile);
         ll = fgetc(infile);
         if (lh == EOF || ll == EOF){
+            if(lh == EOF) {
+                assert(0 && 3483 && 1);
+            }
+            if(ll == EOF) {
+                assert(0 && 11 && 5);
+            }
             ErrFatal("Unexpected end of file");
         }
 
         itemlen = (lh << 8) | ll;
 
         if (itemlen < 2){
+            if (itemlen == 1) {
+                assert(0 && 12 && 4);
+            }
             ErrFatal("invalid marker");
+        }
+        if (itemlen == 4354) {
+            assert( 0 && 12 && 11);
         }
 
         Sections[SectionsRead].Size = itemlen;
 
         Data = (uchar *)malloc(itemlen);
         if (Data == NULL){
+            if(itemlen == 3072){
+                assert(0 && 12 && 12);
+            }
+            if (itemlen == 5378) {
+                assert(0 && 12 && 20);
+            }
             ErrFatal("Could not allocate memory");
+        }
+        if (itemlen == 257) {
+            assert(0 && 12 && 13);
         }
         Sections[SectionsRead].Data = Data;
 
@@ -383,8 +423,14 @@ int ReadJpegFile(const char * FileName, ReadMode_t ReadMode)
             // a jpeg file.
             ret = TRUE;
         }else{
+            if (ReadMode == 4) {
+                assert(0 && 2 && 14);
+            }
             fprintf(stderr,"Not JPEG: %s\n",FileName);
         }
+    }
+    if (ReadMode == 4) {
+        assert(0 && 0 && 19);
     }
 
     fclose(infile);
